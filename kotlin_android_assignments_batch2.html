@@ -1,0 +1,1121 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.root { padding: 1rem 0; font-family: var(--font-sans); }
+.header { margin-bottom: 1.5rem; }
+.header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+.header p { font-size: 14px; color: var(--color-text-secondary); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+.filter-btn { font-size: 12px; padding: 4px 12px; border-radius: 999px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.filter-btn:hover { background: var(--color-background-secondary); }
+.filter-btn.active { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
+.nav { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.nav button { font-size: 13px; padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+.nav button:disabled { opacity: 0.35; cursor: default; }
+.nav button:hover:not(:disabled) { background: var(--color-background-secondary); }
+.counter { font-size: 13px; color: var(--color-text-secondary); flex: 1; text-align: center; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 1.25rem; }
+.card-header { padding: 1rem 1.25rem 0.75rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.card-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.badge-kotlin { background: #EEEDFE; color: #3C3489; }
+.badge-android { background: #E1F5EE; color: #085041; }
+.badge-beginner { background: #EAF3DE; color: #3B6D11; }
+.badge-intermediate { background: #FAEEDA; color: #633806; }
+.card-body { padding: 1rem 1.25rem; }
+.tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--color-border-tertiary); margin: 0 -1.25rem 1rem; padding: 0 1.25rem; }
+.tab { font-size: 12px; padding: 7px 14px; cursor: pointer; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; }
+.tab:hover { color: var(--color-text-primary); }
+.tab.active { color: #0F6E56; border-bottom-color: #0F6E56; }
+.section { display: none; }
+.section.visible { display: block; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; margin-top: 12px; }
+.section-label:first-child { margin-top: 0; }
+p.text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; margin-bottom: 8px; }
+ul.list { font-size: 14px; color: var(--color-text-primary); line-height: 1.7; padding-left: 1.2rem; margin-bottom: 8px; }
+ul.list li { margin-bottom: 2px; }
+pre { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 14px; font-size: 12px; font-family: var(--font-mono); line-height: 1.6; overflow-x: auto; margin-bottom: 8px; color: var(--color-text-primary); white-space: pre; }
+.callout { background: var(--color-background-secondary); border-left: 3px solid #1D9E75; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.6; margin-top: 8px; }
+.io-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+.io-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+.io-box .io-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.io-box pre { background: none; border: none; padding: 0; margin: 0; font-size: 12px; }
+.action-btn { width: 100%; padding: 9px; margin-top: 10px; background: #E1F5EE; color: #085041; border: 0.5px solid #5DCAA5; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; }
+.action-btn:hover { background: #9FE1CB; }
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--color-text-secondary); font-size: 14px; }
+</style>
+
+<div class="root">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Kotlin & Android practice assignments — batch 2, interactive exercise browser</h2>
+  <div class="header">
+    <h2>More Kotlin & Android assignments — batch 2</h2>
+    <p>20 new exercises · harder variations & fresh topics · filter by topic below</p>
+  </div>
+  <div class="filters" id="filters2"></div>
+  <div class="nav">
+    <button id="prev2" onclick="nav2(-1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Prev</button>
+    <span class="counter" id="counter2"></span>
+    <button id="next2" onclick="nav2(1)">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+  <div id="card-area2"></div>
+  <button class="action-btn" onclick="sendPrompt('Go deeper on any of these batch 2 assignments — pick the one that challenges me most and give me a harder follow-up coding exercise. ↗')">Challenge me further ↗</button>
+</div>
+
+<script>
+const A2 = [
+  {
+    id:21, title:"Inline & reified generics", topic:"Kotlin advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Write an inline function `typeNameOf<T>()` that returns the runtime class name of the type parameter T as a String — something normally impossible without reification. Then write `filterIsInstance<T>` using the same mechanism.",
+    features:["`inline` + `reified` type parameters","Accessing `T::class` at runtime","Practical use: type-safe filtering"],
+    starter:`inline fun <reified T> typeNameOf(): String = TODO()
+inline fun <reified T> List<*>.filterType(): List<T> = TODO()`,
+    solution:`inline fun <reified T> typeNameOf(): String = T::class.simpleName ?: "Anonymous"
+
+inline fun <reified T> List<*>.filterType(): List<T> =
+    filterIsInstance<T>()
+
+fun main() {
+    println(typeNameOf<String>())   // String
+    println(typeNameOf<Int>())      // Int
+
+    val mixed: List<Any> = listOf(1, "hello", 2.0, "world", 3)
+    println(mixed.filterType<String>()) // [hello, world]
+    println(mixed.filterType<Int>())    // [1, 3]
+}`,
+    inputOutput:[
+      {input:"typeNameOf<String>()",output:'"String"'},
+      {input:'listOf(1,"a",2,"b").filterType<String>()',output:'["a","b"]'}
+    ],
+    edgeCases:["Anonymous/lambda types return null simpleName","Nested generics: filterType<List<Int>> won't deep-check element types","reified only works in inline functions — compile error otherwise"],
+    explanation:"`reified` erases the usual type-erasure restriction by inlining the function body at every call site, substituting the actual type. Without `inline`, `T::class` would not compile because T is erased at runtime.",
+    followUp:"What is the JVM bytecode difference between a call to an `inline` function and a regular function call? Why can't `reified` work on non-inline functions?"
+  },
+  {
+    id:22, title:"Delegated properties: lazy + observable", topic:"Kotlin advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Use `lazy` to compute a user's full name only once. Use `observable` from `Delegates` to log every change to a user's status field. Combine both in a `UserSession` class.",
+    features:["`by lazy { }` for one-time computation","`Delegates.observable` for change hooks","Property delegation syntax"],
+    starter:`import kotlin.properties.Delegates
+
+class UserSession(val firstName: String, val lastName: String) {
+    val fullName: String by TODO()
+    var status: String by TODO()
+}`,
+    solution:`import kotlin.properties.Delegates
+
+class UserSession(val firstName: String, val lastName: String) {
+    val fullName: String by lazy {
+        println("Computing fullName…")
+        "$firstName $lastName"
+    }
+
+    var status: String by Delegates.observable("offline") { _, old, new ->
+        println("Status changed: $old → $new")
+    }
+}
+
+fun main() {
+    val session = UserSession("Priya", "Sharma")
+    println(session.fullName)  // prints "Computing fullName…" then "Priya Sharma"
+    println(session.fullName)  // no recomputation
+    session.status = "online"  // prints: Status changed: offline → online
+    session.status = "away"    // prints: Status changed: online → away
+}`,
+    inputOutput:[
+      {input:"Access fullName twice",output:"Computed only once; second access instant"},
+      {input:'status = "online"',output:'"Status changed: offline → online"'}
+    ],
+    edgeCases:["`lazy` default is NOT thread-safe (LazyThreadSafetyMode.NONE) — use SYNCHRONIZED if needed","observable fires after the assignment, vetoable fires before","lazy val cannot be reassigned — it's val"],
+    explanation:"`by lazy` delegates to a `Lazy<T>` object that caches the result after first computation. `Delegates.observable` wraps the backing field with a setter that calls your lambda on every change.",
+    followUp:"What is the difference between `Delegates.observable` and `Delegates.vetoable`? Give a real use case where `vetoable` prevents a bad state transition."
+  },
+  {
+    id:23, title:"Coroutine channel producer", topic:"Coroutines advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Build a `tickerChannel` that sends an incrementing counter every N milliseconds. A consumer coroutine should collect the first 5 ticks and then cancel the producer cleanly.",
+    features:["`produce { }` coroutine builder","Receiving from a `ReceiveChannel`","Structured cancellation with `cancel()`"],
+    starter:`import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
+
+fun CoroutineScope.tickerChannel(intervalMs: Long): ReceiveChannel<Int> = TODO()`,
+    solution:`import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
+
+fun CoroutineScope.tickerChannel(intervalMs: Long): ReceiveChannel<Int> = produce {
+    var count = 0
+    while (true) {
+        send(count++)
+        delay(intervalMs)
+    }
+}
+
+fun main() = runBlocking {
+    val ticker = tickerChannel(200)
+    repeat(5) {
+        println("Tick: \${ticker.receive()}")
+    }
+    ticker.cancel()
+    println("Done")
+}`,
+    inputOutput:[
+      {input:"consume 5 ticks at 200ms intervals",output:"Tick: 0..4 then Done"},
+      {input:"cancel before 5 ticks",output:"Producer coroutine is cancelled immediately"}
+    ],
+    edgeCases:["Not cancelling the channel leaks the producer coroutine","send() suspends if the channel buffer is full","ClosedReceiveChannelException if channel closed before receive()"],
+    explanation:"`produce { }` launches a coroutine and returns a `ReceiveChannel`. The producer suspends at `send()` until the consumer calls `receive()`. Cancelling the channel propagates cancellation to the producer coroutine.",
+    followUp:"What is the difference between a rendezvous channel (capacity=0) and a buffered channel? How does buffer capacity affect backpressure behaviour?"
+  },
+  {
+    id:24, title:"Flow combine & zip", topic:"Flow advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Given two flows — one emitting stock prices every second and one emitting currency exchange rates every 2 seconds — use `combine` to always compute the latest converted price, then redo it with `zip` and explain the behavioural difference.",
+    features:["`combine` operator for latest-value pairs","`zip` operator for paired emissions","Understanding hot vs cold timing"],
+    starter:`val priceFlow: Flow<Double> = TODO() // emits every 1s
+val rateFlow: Flow<Double> = TODO()  // emits every 2s
+val combined: Flow<Double> = TODO()
+val zipped: Flow<Double> = TODO()`,
+    solution:`import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+
+val priceFlow: Flow<Double> = flow {
+    val prices = listOf(100.0, 102.0, 98.0, 105.0)
+    prices.forEach { emit(it); delay(1000) }
+}
+
+val rateFlow: Flow<Double> = flow {
+    val rates = listOf(83.0, 84.0)
+    rates.forEach { emit(it); delay(2000) }
+}
+
+val combined: Flow<Double> = combine(priceFlow, rateFlow) { price, rate ->
+    price * rate
+}
+
+val zipped: Flow<Double> = priceFlow.zip(rateFlow) { price, rate ->
+    price * rate
+}
+
+// combined: emits whenever EITHER flow emits (uses latest from the other)
+// zipped:   emits only when BOTH emit; pairs by position; slower flow sets the pace`,
+    inputOutput:[
+      {input:"combine — price emits 102.0, rate still 83.0",output:"emits 102.0 * 83.0 = 8466.0 immediately"},
+      {input:"zip — price emits 100,102,98; rate emits 83,84",output:"only 2 pairs: (100×83), (102×84) — 98.0 is dropped"}
+    ],
+    edgeCases:["`combine` needs at least one emission from EACH flow before it starts","zip terminates when the shorter flow completes","combine re-emits on every upstream emission even if values haven't changed"],
+    explanation:"`combine` is like a spreadsheet cell — it recalculates whenever any input changes. `zip` is like a zipper — it pairs items by index and waits for both sides before emitting.",
+    followUp:"When would `combineTransform` be preferable over `combine`? Give a scenario where you need to conditionally emit based on the combined values."
+  },
+  {
+    id:25, title:"Custom Compose modifier", topic:"Jetpack Compose advanced", tag:"android", diff:"intermediate",
+    problem:"Create a custom `Modifier.shimmer()` that applies an animated loading shimmer effect to any composable. Use it to build a `ShimmerCard` placeholder shown while data loads.",
+    features:["Custom `Modifier` extension","`InfiniteTransition` + `animateFloat`","Brush with animated gradient offsets"],
+    starter:`fun Modifier.shimmer(): Modifier = TODO()
+
+@Composable
+fun ShimmerCard() = TODO()`,
+    solution:`@Composable
+fun Modifier.shimmer(): Modifier {
+    val transition = rememberInfiniteTransition(label = "shimmer")
+    val translateX by transition.animateFloat(
+        initialValue = -1000f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = LinearEasing)
+        ),
+        label = "shimmer_x"
+    )
+    return this.background(
+        brush = Brush.horizontalGradient(
+            colors = listOf(
+                Color(0xFFE0E0E0),
+                Color(0xFFF5F5F5),
+                Color(0xFFE0E0E0)
+            ),
+            startX = translateX,
+            endX = translateX + 600f
+        )
+    )
+}
+
+@Composable
+fun ShimmerCard() {
+    Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(modifier = Modifier.fillMaxWidth().height(20.dp).shimmer())
+            Box(modifier = Modifier.fillMaxWidth(0.6f).height(16.dp).shimmer())
+            Box(modifier = Modifier.fillMaxWidth().height(80.dp).shimmer())
+        }
+    }
+}`,
+    inputOutput:[
+      {input:"ShimmerCard() rendered while loading=true",output:"Animated gradient slides across placeholder boxes"},
+      {input:"loading=false",output:"Replace ShimmerCard with real content card"}
+    ],
+    edgeCases:["Shimmer must respect dark mode — colors should use MaterialTheme.colorScheme","Use `AnimatedVisibility` for enter/exit when swapping shimmer ↔ real content","Multiple shimmer items should share one InfiniteTransition for performance"],
+    explanation:"`rememberInfiniteTransition` runs an animation that never stops. The animated `translateX` slides the gradient window across the composable, creating the shimmer sweep effect.",
+    followUp:"Why is it better to hoist one `rememberInfiniteTransition` for a list of shimmer items rather than one per item? What performance issue does this prevent?"
+  },
+  {
+    id:26, title:"WorkManager one-time task", topic:"Android fundamentals", tag:"android", diff:"intermediate",
+    problem:"Create a `SyncWorker` that uploads cached data (simulated with a delay), reports progress via `setProgress`, and is constrained to run only on an unmetered network connection.",
+    features:["`CoroutineWorker` with `doWork()`","`setProgress()` for intermediate updates","Network constraint via `Constraints`"],
+    starter:`class SyncWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
+    override suspend fun doWork(): Result = TODO()
+}`,
+    solution:`class SyncWorker(
+    ctx: Context,
+    params: WorkerParameters
+) : CoroutineWorker(ctx, params) {
+
+    companion object {
+        const val KEY_PROGRESS = "PROGRESS"
+
+        fun buildRequest(): OneTimeWorkRequest {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+            return OneTimeWorkRequestBuilder<SyncWorker>()
+                .setConstraints(constraints)
+                .build()
+        }
+    }
+
+    override suspend fun doWork(): Result {
+        val totalItems = 10
+        repeat(totalItems) { i ->
+            delay(300)
+            val progress = ((i + 1) * 100) / totalItems
+            setProgress(workDataOf(KEY_PROGRESS to progress))
+        }
+        return Result.success(workDataOf("synced_count" to totalItems))
+    }
+}
+
+// Enqueue:
+WorkManager.getInstance(context).enqueue(SyncWorker.buildRequest())`,
+    inputOutput:[
+      {input:"Worker starts on unmetered network",output:"Progress 10→20→…→100%, then Result.success"},
+      {input:"Network switches to metered mid-run",output:"WorkManager pauses worker; resumes when constraint met"}
+    ],
+    edgeCases:["`Result.retry()` for transient errors (server 5xx)","Worker has a 10-minute execution limit","`setForeground()` needed for long-running workers targeting API 31+"],
+    explanation:"`CoroutineWorker.doWork()` runs on a background dispatcher automatically. `setProgress()` emits `Data` objects that observers can collect via `WorkInfo.progress` LiveData.",
+    followUp:"What is the difference between `OneTimeWorkRequest` with `ExistingWorkPolicy.KEEP` vs `REPLACE`? When would each policy cause bugs in a sync scenario?"
+  },
+  {
+    id:27, title:"Custom view: circular progress", topic:"Android fundamentals", tag:"android", diff:"intermediate",
+    problem:"Build a `CircularProgressView` custom View that draws an arc representing progress (0–100) using Canvas. It should support a custom `progressColor` and `trackColor` attribute.",
+    features:["`onDraw(canvas: Canvas)` override","Custom XML attrs via `TypedArray`","`invalidate()` to trigger redraws"],
+    starter:`class CircularProgressView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : View(context, attrs) {
+    var progress: Int = 0
+        set(value) { field = value.coerceIn(0, 100); invalidate() }
+    // TODO: implement drawing
+}`,
+    solution:`class CircularProgressView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : View(context, attrs) {
+
+    private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 20f
+        color = Color.LTGRAY
+    }
+    private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 20f
+        strokeCap = Paint.Cap.ROUND
+        color = Color.parseColor("#1D9E75")
+    }
+
+    var progress: Int = 0
+        set(value) { field = value.coerceIn(0, 100); invalidate() }
+
+    private val oval = RectF()
+
+    override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
+        val inset = 20f
+        oval.set(inset, inset, w - inset, h - inset)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        canvas.drawArc(oval, -90f, 360f, false, trackPaint)
+        val sweep = 360f * progress / 100f
+        canvas.drawArc(oval, -90f, sweep, false, progressPaint)
+    }
+}`,
+    inputOutput:[
+      {input:"progress = 75",output:"Arc sweeps 270° from top; track shows remaining 90°"},
+      {input:"progress = 0",output:"Only full track circle visible"}
+    ],
+    edgeCases:["`onSizeChanged` recalculates oval — avoid creating objects in `onDraw`","WRAP_CONTENT needs `onMeasure` override to set default size","Accessibility: announce progress changes via `announceForAccessibility`"],
+    explanation:"Creating `Paint` objects in `onDraw` causes GC pressure because it runs on every frame. Objects are allocated in `init` or `onSizeChanged` instead. `invalidate()` schedules a redraw on the next VSYNC.",
+    followUp:"Why must you never create objects (Paint, RectF, Path) inside `onDraw()`? What is the approximate frame budget on a 60Hz display and how does GC affect it?"
+  },
+  {
+    id:28, title:"Compose: LazyColumn with sticky headers", topic:"Jetpack Compose advanced", tag:"android", diff:"intermediate",
+    problem:"Build a `ContactList` composable that groups contacts by first-letter initial, displays sticky section headers using `LazyColumn` with `stickyHeader`, and supports tap-to-select with visual feedback.",
+    features:["`LazyColumn` + `stickyHeader { }`","Grouped data with `groupBy`","`rememberSaveable` for selected state"],
+    starter:`data class Contact(val name: String, val phone: String)
+
+@Composable
+fun ContactList(contacts: List<Contact>) {
+    // TODO: group by initial, render with sticky headers
+}`,
+    solution:`data class Contact(val name: String, val phone: String)
+
+@Composable
+fun ContactList(contacts: List<Contact>) {
+    var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val grouped = remember(contacts) {
+        contacts.sortedBy { it.name }
+            .groupBy { it.name.first().uppercaseChar() }
+    }
+
+    LazyColumn {
+        grouped.forEach { (initial, group) ->
+            stickyHeader(key = initial) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = initial.toString(),
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+            }
+            items(group, key = { it.name }) { contact ->
+                val isSelected = contact.name == selectedName
+                ListItem(
+                    headlineContent = { Text(contact.name) },
+                    supportingContent = { Text(contact.phone) },
+                    colors = ListItemDefaults.colors(
+                        containerColor = if (isSelected)
+                            MaterialTheme.colorScheme.primaryContainer
+                        else MaterialTheme.colorScheme.surface
+                    ),
+                    modifier = Modifier.clickable { selectedName = contact.name }
+                )
+            }
+        }
+    }
+}`,
+    inputOutput:[
+      {input:"Contacts: Alice, Bob, Anna, Charlie",output:"Section A: Alice, Anna — Section B: Bob — Section C: Charlie"},
+      {input:"Tap Alice",output:"Alice row highlights; tap again or tap Bob to deselect/switch"}
+    ],
+    edgeCases:["`key` on `stickyHeader` enables correct scroll restoration","Empty contacts list → blank screen (add empty state)","Contacts with non-ASCII names need locale-aware grouping"],
+    explanation:"`stickyHeader` pins the header at the top of the visible area while its section is partially visible. Providing stable `key` values lets Compose recycle items efficiently and animate insertions/deletions correctly.",
+    followUp:"What happens to scroll position when the underlying list data changes in a `LazyColumn`? How do `key` parameters affect recomposition and animation?"
+  },
+  {
+    id:29, title:"Paging 3: PagingSource", topic:"Android fundamentals", tag:"android", diff:"intermediate",
+    problem:"Implement a `MoviePagingSource` that loads paginated movies from a fake API (list of 100 items). Wire it to a `Pager` and expose a `Flow<PagingData<Movie>>` from a ViewModel.",
+    features:["`PagingSource<Key, Value>` with `load()`","Constructing `LoadResult.Page` with next/prev keys","`Pager` + `cachedIn(viewModelScope)`"],
+    starter:`data class Movie(val id: Int, val title: String)
+
+class MoviePagingSource(private val api: MovieApi) : PagingSource<Int, Movie>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> = TODO()
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? = TODO()
+}`,
+    solution:`data class Movie(val id: Int, val title: String)
+
+interface MovieApi {
+    suspend fun getMovies(page: Int, pageSize: Int): List<Movie>
+}
+
+class MoviePagingSource(
+    private val api: MovieApi
+) : PagingSource<Int, Movie>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+        val page = params.key ?: 1
+        return try {
+            val movies = api.getMovies(page, params.loadSize)
+            LoadResult.Page(
+                data = movies,
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = if (movies.isEmpty()) null else page + 1
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? =
+        state.anchorPosition?.let { anchor ->
+            state.closestPageToPosition(anchor)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchor)?.nextKey?.minus(1)
+        }
+}
+
+class MovieViewModel(private val api: MovieApi) : ViewModel() {
+    val movies: Flow<PagingData<Movie>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false)
+    ) {
+        MoviePagingSource(api)
+    }.flow.cachedIn(viewModelScope)
+}`,
+    inputOutput:[
+      {input:"Scroll to bottom of page 1",output:"page 2 loaded automatically"},
+      {input:"API throws IOException",output:"LoadResult.Error triggers retry UI in LazyPagingItems"}
+    ],
+    edgeCases:["`prevKey = null` for first page — prevents upward pagination","getRefreshKey returns page near scroll anchor for smooth refresh","cachedIn survives rotation; without it, ViewModel re-fetches on config change"],
+    explanation:"`PagingSource.load()` is called by the Paging library when more data is needed. Returning `null` for `nextKey` signals the end of data. `cachedIn` shares and replays the paging stream across recompositions.",
+    followUp:"When would you use a `RemoteMediator` alongside a `PagingSource`? What problem does it solve that `PagingSource` alone cannot?"
+  },
+  {
+    id:30, title:"Hilt: inject a repository", topic:"Android fundamentals", tag:"android", diff:"intermediate",
+    problem:"Set up Hilt to inject a `NewsRepository` (backed by a Retrofit service) into a `NewsViewModel`. Provide the Retrofit instance via a `@Module` and use `@HiltViewModel` for the ViewModel.",
+    features:["`@HiltAndroidApp`, `@AndroidEntryPoint`","Hilt `@Module` + `@Provides` + `@Singleton`","`@HiltViewModel` + `@Inject constructor`"],
+    starter:`// TODO: wire Hilt for NewsApi → NewsRepository → NewsViewModel`,
+    solution:`@HiltAndroidApp
+class App : Application()
+
+interface NewsApi {
+    @GET("top-headlines")
+    suspend fun getHeadlines(): List<Article>
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+    @Provides @Singleton
+    fun provideRetrofit(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl("https://newsapi.org/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @Provides @Singleton
+    fun provideNewsApi(retrofit: Retrofit): NewsApi =
+        retrofit.create(NewsApi::class.java)
+}
+
+class NewsRepository @Inject constructor(
+    private val api: NewsApi
+) {
+    suspend fun getHeadlines() = api.getHeadlines()
+}
+
+@HiltViewModel
+class NewsViewModel @Inject constructor(
+    private val repo: NewsRepository
+) : ViewModel() {
+    private val _headlines = MutableStateFlow<List<Article>>(emptyList())
+    val headlines = _headlines.asStateFlow()
+
+    init { viewModelScope.launch { _headlines.value = repo.getHeadlines() } }
+}
+
+@AndroidEntryPoint
+class NewsFragment : Fragment() {
+    private val vm: NewsViewModel by viewModels()
+}`,
+    inputOutput:[
+      {input:"Fragment created",output:"Hilt injects Retrofit → NewsApi → NewsRepository → NewsViewModel automatically"},
+      {input:"vm.headlines.collect { }",output:"List of articles from API"}
+    ],
+    edgeCases:["Missing `@HiltAndroidApp` on Application → runtime crash","Forget `@AndroidEntryPoint` on Fragment → injection silently skipped","@Singleton scope means one Retrofit instance per app process"],
+    explanation:"`@InstallIn(SingletonComponent::class)` ties the module to the app lifecycle. Hilt reads the `@Inject constructor` chain and wires everything at compile time via generated code, catching missing bindings as build errors.",
+    followUp:"What is the difference between `@Singleton`, `@ActivityRetainedScoped`, and `@ViewModelScoped` in Hilt? How does scope affect instance lifetime during a screen rotation?"
+  },
+  {
+    id:31, title:"Coroutine exception handler", topic:"Coroutines advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Build a `SafeApiCaller` that uses a `CoroutineExceptionHandler` to catch unhandled exceptions from `launch`, and a separate `try/catch` inside `async`. Demonstrate why the handler does NOT catch `async` exceptions.",
+    features:["`CoroutineExceptionHandler` for `launch`","Deferred.await() exception propagation","Difference between `launch` and `async` error handling"],
+    starter:`val handler = CoroutineExceptionHandler { _, throwable ->
+    println("Caught: \${throwable.message}")
+}
+// TODO: demonstrate launch vs async exception handling`,
+    solution:`import kotlinx.coroutines.*
+
+val handler = CoroutineExceptionHandler { _, throwable ->
+    println("Handler caught: \${throwable.message}")
+}
+
+fun main() = runBlocking {
+    // launch: exception propagates to parent scope → handler catches it
+    val job = CoroutineScope(Dispatchers.Default + handler).launch {
+        throw RuntimeException("launch error")
+    }
+    job.join()
+    // Output: Handler caught: launch error
+
+    // async: exception is stored in Deferred; handler does NOT fire
+    val deferred = CoroutineScope(Dispatchers.Default + handler).async {
+        throw RuntimeException("async error")
+    }
+    try {
+        deferred.await()
+    } catch (e: RuntimeException) {
+        println("try/catch got: \${e.message}")
+    }
+    // Output: try/catch got: async error
+    // (handler is NOT called)
+
+    println("Done")
+}`,
+    inputOutput:[
+      {input:"launch block throws",output:'"Handler caught: launch error"'},
+      {input:"async block throws; no await",output:"Exception silently stored — only thrown when await() called"}
+    ],
+    edgeCases:["`SupervisorJob` prevents sibling coroutine cancellation when one fails","Handler on a child coroutine is ignored — only the root scope's handler fires","async without await() in a non-supervisor scope cancels the whole scope"],
+    explanation:"`launch` fire-and-forget exceptions propagate to the parent scope immediately. `async` wraps exceptions in the `Deferred` result — they only surface when you call `await()`. This is why `async` must always be paired with `try/catch` around `await()`.",
+    followUp:"What happens if a child `launch` throws inside a `supervisorScope` vs a regular `coroutineScope`? Draw the cancellation propagation tree for each."
+  },
+  {
+    id:32, title:"Sealed interface with multiple implementations", topic:"Sealed classes", tag:"kotlin", diff:"intermediate",
+    problem:"Model a UI navigation event system using a `sealed interface NavEvent`. Events should include: Navigate (destination string), Back, ShowDialog (title + message), and ShowSnackbar (message + action label). A `NavEventHandler` processes them via exhaustive `when`.",
+    features:["`sealed interface` vs `sealed class`","Object vs data class sub-types","Type-safe event dispatch without `else`"],
+    starter:`sealed interface NavEvent
+// TODO: define all event types
+
+fun handleNavEvent(event: NavEvent): String = TODO()`,
+    solution:`sealed interface NavEvent {
+    data class Navigate(val destination: String) : NavEvent
+    data object Back : NavEvent
+    data class ShowDialog(val title: String, val message: String) : NavEvent
+    data class ShowSnackbar(val message: String, val actionLabel: String = "Dismiss") : NavEvent
+}
+
+fun handleNavEvent(event: NavEvent): String = when (event) {
+    is NavEvent.Navigate    -> "Navigating to \${event.destination}"
+    NavEvent.Back           -> "Popping back stack"
+    is NavEvent.ShowDialog  -> "Dialog: \${event.title} — \${event.message}"
+    is NavEvent.ShowSnackbar -> "Snackbar: \${event.message} [\${event.actionLabel}]"
+}
+
+fun main() {
+    val events = listOf(
+        NavEvent.Navigate("home"),
+        NavEvent.Back,
+        NavEvent.ShowDialog("Error", "Network unavailable"),
+        NavEvent.ShowSnackbar("Saved!")
+    )
+    events.forEach { println(handleNavEvent(it)) }
+}`,
+    inputOutput:[
+      {input:"NavEvent.Back",output:'"Popping back stack"'},
+      {input:'NavEvent.ShowSnackbar("Saved!")',output:'"Snackbar: Saved! [Dismiss]"'}
+    ],
+    edgeCases:["Adding a new NavEvent subtype → compile error on `when` without `else` — forces you to handle it","data object gives value equality and a clean toString(); plain object does too but no copy()","sealed interface allows a class to implement multiple sealed hierarchies (unlike sealed class)"],
+    explanation:"`sealed interface` is more flexible than `sealed class` — a class can implement multiple sealed interfaces but can only extend one sealed class. `data object` (Kotlin 1.9+) is preferred over `object` for data-like singletons because it gets a proper `toString` and serialisation support.",
+    followUp:"What is the key structural difference between `sealed class` and `sealed interface` in Kotlin? Can a `data class` implement a `sealed interface` AND extend another class simultaneously?"
+  },
+  {
+    id:33, title:"Room migration strategy", topic:"Room advanced", tag:"android", diff:"intermediate",
+    problem:"Your Room database is at version 1 with a `User` table (id, name). For version 2 you need to add an `email` column with a default empty string. Write the migration and update the `@Database` annotation.",
+    features:["`Migration(from, to)` with raw SQL","`fallbackToDestructiveMigration()` trade-offs","Updating `@Entity` and `@Database` version"],
+    starter:`@Entity(tableName = "users")
+data class User(
+    @PrimaryKey val id: Int,
+    val name: String
+    // TODO: add email in v2
+)
+// TODO: write Migration(1, 2) and update @Database`,
+    solution:`@Entity(tableName = "users")
+data class User(
+    @PrimaryKey val id: Int,
+    val name: String,
+    @ColumnInfo(name = "email", defaultValue = "") val email: String = ""
+)
+
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "ALTER TABLE users ADD COLUMN email TEXT NOT NULL DEFAULT ''"
+        )
+    }
+}
+
+@Database(entities = [User::class], version = 2)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+
+    companion object {
+        fun build(context: Context) = Room.databaseBuilder(
+            context, AppDatabase::class.java, "app_db"
+        )
+        .addMigrations(MIGRATION_1_2)
+        .build()
+    }
+}`,
+    inputOutput:[
+      {input:"App upgrades from v1 to v2",output:"Migration runs ALTER TABLE; existing users get email=''"},
+      {input:"Skip migration (fallbackToDestructive)",output:"All user data wiped and tables recreated from scratch"}
+    ],
+    edgeCases:["SQLite ALTER TABLE only supports ADD COLUMN — renaming/deleting columns needs a full table copy-and-replace","Multiple version jumps need chained migrations (1→2, 2→3) or a skip migration (1→3)","exportSchema = true generates JSON schema files useful for testing migrations"],
+    explanation:"Room validates the migration at app startup by comparing the expected schema hash. If the migration SQL doesn't produce the expected schema, Room throws `IllegalStateException` immediately — so test migrations with `MigrationTestHelper`.",
+    followUp:"What is the recommended way to test a Room migration? What does `MigrationTestHelper` verify that a regular instrumented test cannot?"
+  },
+  {
+    id:34, title:"Kotlin DSL builder pattern", topic:"Kotlin advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Build a simple `HttpRequest` DSL that lets callers configure method, URL, headers, and body in a readable builder block. The DSL should be type-safe and idiomatic.",
+    features:["Lambda with receiver (`T.() -> Unit`)","`@DslMarker` to prevent scope leakage","Nested DSL blocks for headers"],
+    starter:`data class HttpRequest(
+    val method: String,
+    val url: String,
+    val headers: Map<String, String>,
+    val body: String?
+)
+
+fun httpRequest(block: HttpRequestBuilder.() -> Unit): HttpRequest = TODO()`,
+    solution:`@DslMarker
+annotation class HttpDsl
+
+@HttpDsl
+class HeadersBuilder {
+    val map = mutableMapOf<String, String>()
+    infix fun String.to(value: String) { map[this] = value }
+}
+
+@HttpDsl
+class HttpRequestBuilder {
+    var method: String = "GET"
+    var url: String = ""
+    var body: String? = null
+    private val headersBuilder = HeadersBuilder()
+
+    fun headers(block: HeadersBuilder.() -> Unit) {
+        headersBuilder.block()
+    }
+
+    fun build() = HttpRequest(method, url, headersBuilder.map.toMap(), body)
+}
+
+fun httpRequest(block: HttpRequestBuilder.() -> Unit): HttpRequest =
+    HttpRequestBuilder().apply(block).build()
+
+fun main() {
+    val request = httpRequest {
+        method = "POST"
+        url = "https://api.example.com/users"
+        headers {
+            "Content-Type" to "application/json"
+            "Authorization" to "Bearer token123"
+        }
+        body = """{"name":"Ada"}"""
+    }
+    println(request)
+}`,
+    inputOutput:[
+      {input:"DSL block as above",output:'HttpRequest(method=POST, url=https://..., headers={Content-Type=..., Authorization=...}, body={"name":"Ada"})'},
+      {input:"No body set",output:"body = null in result"}
+    ],
+    edgeCases:["@DslMarker prevents calling outer builder methods from inside `headers { }` block","method defaults to GET if not set","Calling `build()` twice is safe — builders are not consumed"],
+    explanation:"Lambda-with-receiver `HeadersBuilder.() -> Unit` makes `this` inside the block refer to `HeadersBuilder`, enabling the clean `\"key\" to \"value\"` syntax. `@DslMarker` prevents accidentally calling `headers {}` inside another `headers {}` block.",
+    followUp:"How does `@DslMarker` work at the compiler level? What error does it prevent, and what happens if you remove it from the annotation?"
+  },
+  {
+    id:35, title:"SharedFlow for one-time events", topic:"Flow advanced", tag:"android", diff:"intermediate",
+    problem:"Create a `UiEventBus` using `SharedFlow` to send one-time navigation events (no replay) from a ViewModel. Collect them in a Fragment and ensure events are not re-delivered on rotation.",
+    features:["`MutableSharedFlow` with `replay=0`","Collect in `repeatOnLifecycle(STARTED)`","One-shot event pattern vs StateFlow"],
+    starter:`sealed interface UiEvent {
+    data class NavigateTo(val route: String) : UiEvent
+    data class ShowToast(val message: String) : UiEvent
+}
+
+class DashboardViewModel : ViewModel() {
+    // TODO: expose events as SharedFlow
+}`,
+    solution:`sealed interface UiEvent {
+    data class NavigateTo(val route: String) : UiEvent
+    data class ShowToast(val message: String) : UiEvent
+}
+
+class DashboardViewModel : ViewModel() {
+    private val _events = MutableSharedFlow<UiEvent>()
+    val events: SharedFlow<UiEvent> = _events.asSharedFlow()
+
+    fun onLoginClick() {
+        viewModelScope.launch {
+            _events.emit(UiEvent.NavigateTo("home"))
+        }
+    }
+
+    fun onSaveClick() {
+        viewModelScope.launch {
+            _events.emit(UiEvent.ShowToast("Saved successfully"))
+        }
+    }
+}
+
+// In Fragment:
+viewLifecycleOwner.lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is UiEvent.NavigateTo -> findNavController().navigate(event.route)
+                is UiEvent.ShowToast -> Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}`,
+    inputOutput:[
+      {input:"onLoginClick() called",output:'NavigateTo("home") delivered to active collector only'},
+      {input:"Screen rotated, then onLoginClick()",output:"Only the post-rotation event delivered — no replay of old events"}
+    ],
+    edgeCases:["`replay=0` means events emitted while no collector is active are lost — acceptable for navigation events","Use `Channel` instead if guaranteed delivery is needed","`repeatOnLifecycle(STARTED)` cancels collection in background, preventing memory leaks"],
+    explanation:"`SharedFlow` with `replay=0` and no buffer drops events if no collector is listening — ideal for fire-and-forget UI events that must not be re-delivered. `StateFlow` stores the last value and replays it, which is wrong for navigation commands.",
+    followUp:"What is the `Channel`-based alternative for one-shot events? Compare `SharedFlow(replay=0)` vs `Channel(BUFFERED)` for a login navigation event — which guarantees delivery and which can drop events?"
+  },
+  {
+    id:36, title:"Type-safe Builder: notification DSL", topic:"Kotlin advanced", tag:"android", diff:"intermediate",
+    problem:"Create a `notificationBuilder` DSL that builds a `NotificationCompat.Builder` with required title/body and optional actions. Each action is a nested `action { }` block.",
+    features:["Nested DSL with `@DslMarker`","Vararg vs collection for actions","Integration with Android `NotificationCompat`"],
+    starter:`fun Context.buildNotification(
+    channelId: String,
+    block: NotificationDslBuilder.() -> Unit
+): Notification = TODO()`,
+    solution:`@DslMarker annotation class NotifDsl
+
+@NotifDsl
+class NotificationActionBuilder {
+    var icon: Int = 0
+    var title: String = ""
+    var pendingIntent: PendingIntent? = null
+}
+
+@NotifDsl
+class NotificationDslBuilder(private val context: Context, private val channelId: String) {
+    var title: String = ""
+    var body: String = ""
+    var smallIcon: Int = android.R.drawable.ic_dialog_info
+    private val actions = mutableListOf<NotificationCompat.Action>()
+
+    fun action(block: NotificationActionBuilder.() -> Unit) {
+        val a = NotificationActionBuilder().apply(block)
+        actions += NotificationCompat.Action(a.icon, a.title, a.pendingIntent)
+    }
+
+    fun build(): Notification = NotificationCompat.Builder(context, channelId)
+        .setContentTitle(title)
+        .setContentText(body)
+        .setSmallIcon(smallIcon)
+        .apply { actions.forEach { addAction(it) } }
+        .build()
+}
+
+fun Context.buildNotification(
+    channelId: String,
+    block: NotificationDslBuilder.() -> Unit
+): Notification = NotificationDslBuilder(this, channelId).apply(block).build()
+
+// Usage:
+val notif = buildNotification("alerts_channel") {
+    title = "Download complete"
+    body = "your_file.pdf is ready"
+    action {
+        icon = R.drawable.ic_open
+        title = "Open"
+        pendingIntent = openPendingIntent
+    }
+}`,
+    inputOutput:[
+      {input:"DSL with title, body, 1 action",output:"Notification with correct title, body, action button"},
+      {input:"No action block",output:"Notification with no action buttons"}
+    ],
+    edgeCases:["Missing title/body should use require() checks in build()","Multiple action { } blocks create multiple buttons","PendingIntent flags differ on API 31+ (FLAG_IMMUTABLE required)"],
+    explanation:"The nested `action { }` DSL works because `NotificationActionBuilder` is a separate receiver, and `@NotifDsl` prevents calling outer `NotificationDslBuilder` methods inside the action block — a common source of confusing bugs.",
+    followUp:"How would you enforce that `title` and `body` are not empty at compile time rather than runtime? What Kotlin construct could guarantee a non-empty string type?"
+  },
+  {
+    id:37, title:"Flow: retry with exponential backoff", topic:"Flow advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Write a `Flow<T>.retryWithBackoff()` extension that retries the upstream flow on failure up to N times with doubling delay between attempts. Emit a `RetryState` sealed class to indicate retry progress.",
+    features:["`retry` / `retryWhen` operator","Flow extension function","Sealed class for retry state"],
+    starter:`sealed class RetryState<out T> {
+    data class Retrying(val attempt: Int, val delayMs: Long) : RetryState<Nothing>()
+    data class Data<T>(val value: T) : RetryState<T>()
+    data class Failed(val error: Throwable) : RetryState<Nothing>()
+}
+
+fun <T> Flow<T>.retryWithBackoff(maxRetries: Int, initialDelay: Long = 500L): Flow<RetryState<T>> = TODO()`,
+    solution:`import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+
+sealed class RetryState<out T> {
+    data class Retrying(val attempt: Int, val delayMs: Long) : RetryState<Nothing>()
+    data class Data<T>(val value: T) : RetryState<T>()
+    data class Failed(val error: Throwable) : RetryState<Nothing>()
+}
+
+fun <T> Flow<T>.retryWithBackoff(
+    maxRetries: Int,
+    initialDelay: Long = 500L
+): Flow<RetryState<T>> = flow {
+    var attempt = 0
+    var delayMs = initialDelay
+    while (true) {
+        try {
+            this@retryWithBackoff.collect { emit(RetryState.Data(it)) }
+            break
+        } catch (e: Exception) {
+            if (attempt >= maxRetries) { emit(RetryState.Failed(e)); break }
+            emit(RetryState.Retrying(attempt + 1, delayMs))
+            delay(delayMs)
+            delayMs *= 2
+            attempt++
+        }
+    }
+}`,
+    inputOutput:[
+      {input:"upstream fails twice then succeeds; maxRetries=3",output:"Retrying(1,500) → Retrying(2,1000) → Data(value)"},
+      {input:"upstream always fails; maxRetries=2",output:"Retrying(1,500) → Retrying(2,1000) → Failed(error)"}
+    ],
+    edgeCases:["maxRetries=0 → immediately Failed on first error","Success on first attempt → only Data emits, no Retrying","Cancellation during delay is cooperative — flow stops cleanly"],
+    explanation:"Wrapping `collect` in a `while(true)` loop with a `try/catch` re-subscribes the upstream cold flow on each retry. `break` exits the loop on success or after exhausting retries.",
+    followUp:"How would you add a `shouldRetry: (Throwable) -> Boolean` predicate to only retry specific error types like `IOException` but not `IllegalArgumentException`?"
+  },
+  {
+    id:38, title:"Compose: ViewModel + UiState pattern", topic:"Jetpack Compose advanced", tag:"android", diff:"intermediate",
+    problem:"Build a `LoginScreen` composable driven by a single `LoginUiState` data class from a ViewModel. The state should include email, password, isLoading, and errorMessage. Form submission triggers a fake login coroutine.",
+    features:["Single `UiState` data class pattern","ViewModel `StateFlow` collected with `collectAsStateWithLifecycle`","Compose form with input validation feedback"],
+    starter:`data class LoginUiState(
+    val email: String = "",
+    val password: String = "",
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
+
+class LoginViewModel : ViewModel() {
+    // TODO: expose uiState, onEmailChange, onPasswordChange, onLoginClick
+}`,
+    solution:`data class LoginUiState(
+    val email: String = "",
+    val password: String = "",
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
+
+class LoginViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+
+    fun onEmailChange(email: String) = _uiState.update { it.copy(email = email) }
+    fun onPasswordChange(pw: String) = _uiState.update { it.copy(password = pw) }
+
+    fun onLoginClick() {
+        val state = _uiState.value
+        if (state.email.isBlank() || state.password.isBlank()) {
+            _uiState.update { it.copy(errorMessage = "Fields cannot be empty") }
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            delay(1500)
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+}
+
+@Composable
+fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedTextField(value = state.email, onValueChange = viewModel::onEmailChange, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = state.password, onValueChange = viewModel::onPasswordChange, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+        state.errorMessage?.let { Text(it, color = MaterialTheme.colorScheme.error, fontSize = 13.sp) }
+        Button(onClick = viewModel::onLoginClick, modifier = Modifier.fillMaxWidth(), enabled = !state.isLoading) {
+            if (state.isLoading) CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+            else Text("Log in")
+        }
+    }
+}`,
+    inputOutput:[
+      {input:"Submit with empty fields",output:'"Fields cannot be empty" error shown'},
+      {input:"Valid credentials submitted",output:"Button shows spinner for 1.5s then re-enables"}
+    ],
+    edgeCases:["Double-tap submit while loading → `enabled = !isLoading` prevents it","errorMessage cleared on next valid submission attempt","Rotation: StateFlow replays last state instantly — no loading flash"],
+    explanation:"A single `UiState` data class is easier to reason about than many individual `StateFlow` properties. `copy()` lets you update one field atomically. `collectAsStateWithLifecycle` cancels collection when the composable leaves the STARTED state.",
+    followUp:"Why is `collectAsStateWithLifecycle` preferred over `collectAsState()` in Android apps? What lifecycle event causes the difference in behaviour?"
+  },
+  {
+    id:39, title:"Coroutines: structured concurrency with async/await", topic:"Coroutines advanced", tag:"kotlin", diff:"intermediate",
+    problem:"Implement a `loadDashboard()` function that fetches user profile, notifications, and feed items in parallel using `async`, returns a combined `Dashboard` object, and cancels all if any one fetch fails.",
+    features:["`coroutineScope { }` for structured concurrency","Multiple `async` + `awaitAll`","Failure in one deferred cancels siblings"],
+    starter:`data class Dashboard(val profile: Profile, val notifications: List<Notif>, val feed: List<Post>)
+
+suspend fun loadDashboard(): Dashboard {
+    // TODO: fetch all 3 in parallel, cancel all if one fails
+}`,
+    solution:`data class Profile(val name: String)
+data class Notif(val text: String)
+data class Post(val title: String)
+data class Dashboard(val profile: Profile, val notifications: List<Notif>, val feed: List<Post>)
+
+suspend fun fetchProfile(): Profile { delay(300); return Profile("Ada") }
+suspend fun fetchNotifications(): List<Notif> { delay(200); return listOf(Notif("New message")) }
+suspend fun fetchFeed(): List<Post> { delay(400); return listOf(Post("Kotlin Tips")) }
+
+suspend fun loadDashboard(): Dashboard = coroutineScope {
+    val profileDeferred = async { fetchProfile() }
+    val notifsDeferred  = async { fetchNotifications() }
+    val feedDeferred    = async { fetchFeed() }
+
+    Dashboard(
+        profile       = profileDeferred.await(),
+        notifications = notifsDeferred.await(),
+        feed          = feedDeferred.await()
+    )
+}
+
+// Using awaitAll alternative:
+suspend fun loadDashboardAlt(): Dashboard = coroutineScope {
+    val (p, n, f) = awaitAll(
+        async { fetchProfile() as Any },
+        async { fetchNotifications() as Any },
+        async { fetchFeed() as Any }
+    )
+    Dashboard(p as Profile, n as List<Notif>, f as List<Post>)
+}`,
+    inputOutput:[
+      {input:"All 3 fetches succeed (300ms, 200ms, 400ms)",output:"Dashboard ready in ~400ms (parallel)"},
+      {input:"fetchFeed() throws IOException",output:"coroutineScope cancels profile & notifs deferred; exception propagates to caller"}
+    ],
+    edgeCases:["`coroutineScope` vs `supervisorScope`: coroutineScope cancels all children on first failure; supervisorScope lets siblings continue","awaitAll fails fast on first error","async without await leaks a running coroutine silently"],
+    explanation:"`coroutineScope` creates a child scope — all `async` blocks inside are siblings. If any sibling fails, the scope cancels the rest and re-throws. Total time is max(300,200,400)=400ms instead of sequential 900ms.",
+    followUp:"When would you use `supervisorScope` instead of `coroutineScope` for parallel fetches? Give a real dashboard example where partial failure is acceptable and you want to show whatever data loaded successfully."
+  },
+  {
+    id:40, title:"Unit test Flow with Turbine", topic:"Testing advanced", tag:"android", diff:"intermediate",
+    problem:"Write unit tests for the `SearchViewModel` from exercise 7 using the Turbine library. Test: initial state has empty results, typing emits filtered results, and clearing resets to empty.",
+    features:["Turbine `test { }` block","Consuming Flow emissions with `awaitItem()`","Coroutine test scope with `runTest`"],
+    starter:`class SearchViewModelTest {
+    // TODO: test SearchViewModel using Turbine
+    // dependency: testImplementation("app.cash.turbine:turbine:1.1.0")
+}`,
+    solution:`import app.cash.turbine.test
+import kotlinx.coroutines.test.runTest
+import org.junit.*
+
+class SearchViewModelTest {
+
+    private lateinit var viewModel: SearchViewModel
+
+    @Before
+    fun setUp() { viewModel = SearchViewModel() }
+
+    @Test
+    fun \`initial state has empty results\`() = runTest {
+        viewModel.uiState.test {
+            val initial = awaitItem()
+            Assert.assertEquals("", initial.query)
+            Assert.assertTrue(initial.results.isEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun \`typing filters results correctly\`() = runTest {
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
+            viewModel.onQueryChanged("mum")
+            val filtered = awaitItem()
+            Assert.assertEquals("mum", filtered.query)
+            Assert.assertTrue(filtered.results.contains("Mumbai"))
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun \`clearing query returns empty results\`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.onQueryChanged("del")
+            awaitItem()
+            viewModel.onQueryChanged("")
+            val cleared = awaitItem()
+            Assert.assertTrue(cleared.results.isEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+}`,
+    inputOutput:[
+      {input:"3 test methods run",output:"All 3 pass — Turbine verifies exact emission sequence"},
+      {input:"Extra emission not consumed",output:"Turbine throws UnconsumedEventsException unless cancelAndIgnoreRemainingEvents() used"}
+    ],
+    edgeCases:["`awaitItem()` suspends until the next emission — never busy-waits","Turbine enforces that all emitted items are consumed or explicitly discarded","runTest automatically advances virtual time for delay-based flows"],
+    explanation:"Turbine gives Flow a `test {}` block where `awaitItem()` collects one emission at a time in a sequential, readable way. Without Turbine, Flow testing requires `toList()` in `runTest` which misses intermediate states.",
+    followUp:"How does `runTest` handle `delay()` inside coroutines? What is `TestCoroutineScheduler.advanceTimeBy()` used for, and when do you need it with Turbine?"
+  }
+];
+
+const TOPICS2 = [...new Set(A2.map(a => a.topic))];
+let activeTopics2 = new Set();
+let curIdx2 = 0;
+let activeTab2 = 'problem';
+
+function getFiltered2() {
+  if (activeTopics2.size === 0) return A2;
+  return A2.filter(a => activeTopics2.has(a.topic));
+}
+
+function renderFilters2() {
+  const c = document.getElementById('filters2');
+  c.innerHTML = '';
+  TOPICS2.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (activeTopics2.has(t) ? ' active' : '');
+    btn.textContent = t;
+    btn.onclick = () => { activeTopics2.has(t) ? activeTopics2.delete(t) : activeTopics2.add(t); curIdx2=0; renderFilters2(); renderCard2(); };
+    c.appendChild(btn);
+  });
+}
+
+function renderCard2() {
+  const filtered = getFiltered2();
+  const counter = document.getElementById('counter2');
+  const area = document.getElementById('card-area2');
+  document.getElementById('prev2').disabled = curIdx2 === 0;
+  document.getElementById('next2').disabled = curIdx2 >= filtered.length - 1;
+  if (!filtered.length) { area.innerHTML = '<div class="empty">No assignments match.</div>'; counter.textContent = '0 assignments'; return; }
+  curIdx2 = Math.max(0, Math.min(curIdx2, filtered.length - 1));
+  counter.textContent = `${curIdx2 + 1} of ${filtered.length}`;
+  const a = filtered[curIdx2];
+  const TABS = ['problem','solution','io','followup'];
+  const LABELS = {problem:'Problem',solution:'Solution',io:'I/O & Edges',followup:'Follow-up'};
+  area.innerHTML = `<div class="card">
+    <div class="card-header">
+      <p class="card-title">${a.id}. ${a.title}</p>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <span class="badge badge-${a.tag}">${a.tag==='kotlin'?'Kotlin':'Android'}</span>
+        <span class="badge badge-${a.diff}">${a.diff}</span>
+        <span class="badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">${a.topic}</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="tabs" id="t2-tabs"></div>
+      <div class="section" id="t2-problem"></div>
+      <div class="section" id="t2-solution"></div>
+      <div class="section" id="t2-io"></div>
+      <div class="section" id="t2-followup"></div>
+    </div>
+  </div>`;
+  const tr = document.getElementById('t2-tabs');
+  TABS.forEach(t => { const el=document.createElement('div'); el.className='tab'+(activeTab2===t?' active':''); el.textContent=LABELS[t]; el.onclick=()=>{activeTab2=t;switchTab2();}; tr.appendChild(el); });
+  document.getElementById('t2-problem').innerHTML = `<div class="section-label">Problem</div><p class="text">${a.problem}</p><div class="section-label">Required features</div><ul class="list">${a.features.map(f=>`<li>${f}</li>`).join('')}</ul>${a.starter?`<div class="section-label">Starter code</div><pre>${esc2(a.starter)}</pre>`:''}`;
+  document.getElementById('t2-solution').innerHTML = `<div class="section-label">Solution</div><pre>${esc2(a.solution)}</pre><div class="section-label">Explanation</div><p class="text">${a.explanation}</p>`;
+  document.getElementById('t2-io').innerHTML = `<div class="section-label">Sample I/O</div>${a.inputOutput.map(io=>`<div class="io-row"><div class="io-box"><div class="io-label">Input</div><pre>${esc2(io.input)}</pre></div><div class="io-box"><div class="io-label">Output</div><pre>${esc2(io.output)}</pre></div></div>`).join('')}<div class="section-label">Edge cases</div><ul class="list">${a.edgeCases.map(e=>`<li>${e}</li>`).join('')}</ul>`;
+  document.getElementById('t2-followup').innerHTML = `<div class="section-label">Interview follow-up</div><div class="callout">${a.followUp}</div><button class="action-btn" style="margin-top:12px" onclick="sendPrompt('Answer this Kotlin/Android interview question in depth: ${a.followUp.replace(/'/g,"\\'").replace(/"/g,'&quot;')} ↗')">Discuss this question ↗</button>`;
+  switchTab2();
+}
+
+function switchTab2() {
+  ['problem','solution','io','followup'].forEach((t,i) => {
+    const s = document.getElementById('t2-'+t); if(s) s.className='section'+(activeTab2===t?' visible':'');
+  });
+  document.querySelectorAll('#t2-tabs .tab').forEach((el,i) => {
+    el.className='tab'+(['problem','solution','io','followup'][i]===activeTab2?' active':'');
+  });
+}
+
+function nav2(dir) { curIdx2 = Math.max(0, Math.min(curIdx2+dir, getFiltered2().length-1)); renderCard2(); }
+function esc2(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderFilters2();
+renderCard2();
+</script>
