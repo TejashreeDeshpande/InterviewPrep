@@ -1,0 +1,1051 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .root { padding: 1rem 0; }
+  .header { margin-bottom: 1.5rem; }
+  .header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+  .header p { font-size: 14px; color: var(--color-text-secondary); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .filter-btn {
+    font-size: 12px; padding: 4px 12px; border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-secondary);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .filter-btn:hover { background: var(--color-background-secondary); }
+  .filter-btn.active {
+    background: #EEEDFE; color: #3C3489; border-color: #AFA9EC;
+  }
+
+  .nav { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+  .nav button {
+    font-size: 13px; padding: 5px 14px; border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary); cursor: pointer;
+  }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+  .nav button:hover:not(:disabled) { background: var(--color-background-secondary); }
+  .counter { font-size: 13px; color: var(--color-text-secondary); flex: 1; text-align: center; }
+
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .card-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .badge {
+    font-size: 11px; font-weight: 500; padding: 3px 9px;
+    border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+  }
+  .badge-kotlin { background: #EEEDFE; color: #3C3489; }
+  .badge-android { background: #E1F5EE; color: #085041; }
+  .badge-diff-beginner { background: #EAF3DE; color: #3B6D11; }
+  .badge-diff-intermediate { background: #FAEEDA; color: #633806; }
+
+  .card-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  .card-body { padding: 1rem 1.25rem; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--color-border-tertiary); margin: 0 -1.25rem 1rem; padding: 0 1.25rem; }
+  .tab {
+    font-size: 12px; padding: 7px 14px; cursor: pointer;
+    color: var(--color-text-secondary); border-bottom: 2px solid transparent;
+    margin-bottom: -0.5px; transition: all 0.15s;
+  }
+  .tab:hover { color: var(--color-text-primary); }
+  .tab.active { color: #534AB7; border-bottom-color: #534AB7; }
+
+  .section { display: none; }
+  .section.visible { display: block; }
+
+  .section-label {
+    font-size: 11px; font-weight: 500; color: var(--color-text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 6px; margin-top: 12px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  p.text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; margin-bottom: 8px; }
+
+  ul.list { font-size: 14px; color: var(--color-text-primary); line-height: 1.7; padding-left: 1.2rem; margin-bottom: 8px; }
+  ul.list li { margin-bottom: 2px; }
+
+  pre {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px; font-size: 12px;
+    font-family: var(--font-mono); line-height: 1.6;
+    overflow-x: auto; margin-bottom: 8px;
+    color: var(--color-text-primary);
+    white-space: pre;
+  }
+
+  .callout {
+    background: var(--color-background-secondary);
+    border-left: 3px solid #7F77DD;
+    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    padding: 10px 14px; font-size: 13px;
+    color: var(--color-text-primary); line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  .io-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .io-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+  .io-box .io-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+  .io-box pre { background: none; border: none; padding: 0; margin: 0; font-size: 12px; }
+
+  .generate-btn {
+    width: 100%; padding: 9px; margin-top: 10px;
+    background: #EEEDFE; color: #3C3489;
+    border: 0.5px solid #AFA9EC; border-radius: var(--border-radius-md);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  .generate-btn:hover { background: #CECBF6; }
+
+  .empty { text-align: center; padding: 2.5rem 1rem; color: var(--color-text-secondary); font-size: 14px; }
+</style>
+
+<div class="root">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Kotlin & Android Practice Assignments — interactive exercise browser</h2>
+
+  <div class="header">
+    <h2>Kotlin & Android practice assignments</h2>
+    <p>20 exercises · beginner → intermediate · click a topic to filter</p>
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div class="nav">
+    <button id="prev-btn" onclick="navigate(-1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Prev</button>
+    <span class="counter" id="counter"></span>
+    <button id="next-btn" onclick="navigate(1)">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+  <div id="card-area"></div>
+  <button class="generate-btn" onclick="sendPrompt('Generate more Kotlin/Android practice assignments at the same difficulty level, covering different topics or harder variations of what I have seen so far. ↗')">Generate more assignments ↗</button>
+</div>
+
+<script>
+const ASSIGNMENTS = [
+  {
+    id: 1, title: "Null-safe user profile", topic: "Null safety", tag: "kotlin", diff: "beginner",
+    problem: "You have a nullable user object fetched from a network call. Safely extract the user's display name, defaulting to 'Guest' if the user or name is null. Also log a warning if the email is missing.",
+    features: ["Safe calls with `?.`", "Elvis operator `?:`", "Let block for null-check side effects"],
+    starter: `data class User(val name: String?, val email: String?)
+fun getUserLabel(user: User?): String {
+    // TODO: return name or "Guest"
+}`,
+    solution: `data class User(val name: String?, val email: String?)
+
+fun getUserLabel(user: User?): String {
+    user?.email ?: println("Warning: email is missing")
+    return user?.name ?: "Guest"
+}
+
+fun main() {
+    println(getUserLabel(null))             // Guest
+    println(getUserLabel(User(null, null))) // Guest + warning
+    println(getUserLabel(User("Ada", "ada@example.com"))) // Ada
+}`,
+    inputOutput: [
+      { input: "getUserLabel(null)", output: '"Guest"' },
+      { input: 'getUserLabel(User("Ada", null))', output: 'Warning printed, returns "Ada"' }
+    ],
+    edgeCases: ["User object is null", "User exists but name is null", "User exists but email is null"],
+    explanation: "Safe-call `?.` short-circuits to null instead of throwing NPE. The Elvis `?:` provides a fallback. Chaining them keeps the logic single-line and readable.",
+    followUp: "What is the difference between `?.let { }` and a plain `if (x != null)` check? When does the compiler prefer one over the other?"
+  },
+  {
+    id: 2, title: "Transaction filter & summary", topic: "Collections", tag: "kotlin", diff: "beginner",
+    problem: "Given a list of bank transactions, filter only credits above ₹500, sort by amount descending, and return the total sum formatted as '₹X,XXX.XX'.",
+    features: ["`filter`, `sortedByDescending`, `sumOf`", "String formatting with `format`", "Data class for Transaction"],
+    starter: `data class Transaction(val id: Int, val type: String, val amount: Double)
+fun summarizeCredits(transactions: List<Transaction>): String {
+    // TODO
+}`,
+    solution: `data class Transaction(val id: Int, val type: String, val amount: Double)
+
+fun summarizeCredits(transactions: List<Transaction>): String {
+    val total = transactions
+        .filter { it.type == "credit" && it.amount > 500 }
+        .sortedByDescending { it.amount }
+        .sumOf { it.amount }
+    return "₹%,.2f".format(total)
+}
+
+fun main() {
+    val txns = listOf(
+        Transaction(1, "credit", 1200.0),
+        Transaction(2, "debit", 300.0),
+        Transaction(3, "credit", 450.0),
+        Transaction(4, "credit", 800.0)
+    )
+    println(summarizeCredits(txns)) // ₹2,000.00
+}`,
+    inputOutput: [
+      { input: "credits: ₹1200, ₹450, ₹800 + debit ₹300", output: '"₹2,000.00" (only ₹1200 & ₹800 qualify)' }
+    ],
+    edgeCases: ["Empty list → '₹0.00'", "No credits above threshold", "All amounts exactly ₹500 (not included)"],
+    explanation: "Kotlin collection pipelines are lazy-readable: filter → sort → reduce. `sumOf` is type-safe and avoids `.sum()` on mapped doubles. `%,.2f` adds locale-style comma separators.",
+    followUp: "How would you rewrite this using `fold` instead of `sumOf`? What are the trade-offs?"
+  },
+  {
+    id: 3, title: "Sealed class API state", topic: "Sealed classes", tag: "kotlin", diff: "beginner",
+    problem: "Model the three states of a network call — Loading, Success (with data), and Error (with a message). Write a function that renders each state to a UI-friendly string.",
+    features: ["Sealed class hierarchy", "`when` exhaustive matching", "Data subclasses vs object subclasses"],
+    starter: `sealed class ApiState<out T>
+// TODO: add Loading, Success, Error
+
+fun <T> renderState(state: ApiState<T>): String {
+    // TODO
+}`,
+    solution: `sealed class ApiState<out T> {
+    object Loading : ApiState<Nothing>()
+    data class Success<T>(val data: T) : ApiState<T>()
+    data class Error(val message: String) : ApiState<Nothing>()
+}
+
+fun <T> renderState(state: ApiState<T>): String = when (state) {
+    is ApiState.Loading -> "Loading…"
+    is ApiState.Success -> "Data: \${state.data}"
+    is ApiState.Error   -> "Error: \${state.message}"
+}
+
+fun main() {
+    println(renderState(ApiState.Loading))
+    println(renderState(ApiState.Success("Hello")))
+    println(renderState(ApiState.Error("Timeout")))
+}`,
+    inputOutput: [
+      { input: "ApiState.Loading", output: '"Loading…"' },
+      { input: 'ApiState.Error("Timeout")', output: '"Error: Timeout"' }
+    ],
+    edgeCases: ["when must be exhaustive — add a new subclass and see the compile error", "Success wraps Any type (generics)"],
+    explanation: "`sealed class` restricts subclasses to the same file, letting `when` be exhaustive without an `else`. `object` is a singleton (no data), `data class` gets copy/equals/toString for free.",
+    followUp: "Why is `out T` (covariance) used here? What would break if you removed it and tried to assign `ApiState.Loading` to `ApiState<String>`?"
+  },
+  {
+    id: 4, title: "Higher-order retry mechanism", topic: "Higher-order functions", tag: "kotlin", diff: "intermediate",
+    problem: "Write a `retry` function that re-invokes a suspending block up to N times, with exponential backoff, stopping early on success and rethrowing the last exception on total failure.",
+    features: ["Higher-order function taking `suspend () -> T`", "Exponential backoff with `delay`", "Exception handling with `runCatching`"],
+    starter: `suspend fun <T> retry(
+    times: Int,
+    initialDelayMs: Long = 100,
+    block: suspend () -> T
+): T {
+    // TODO
+}`,
+    solution: `import kotlinx.coroutines.delay
+
+suspend fun <T> retry(
+    times: Int,
+    initialDelayMs: Long = 100,
+    block: suspend () -> T
+): T {
+    var delayMs = initialDelayMs
+    var lastException: Throwable? = null
+    repeat(times) { attempt ->
+        runCatching { return block() }
+            .onFailure {
+                lastException = it
+                if (attempt < times - 1) delay(delayMs)
+                delayMs *= 2
+            }
+    }
+    throw lastException!!
+}`,
+    inputOutput: [
+      { input: "block fails twice then succeeds", output: "returns result on 3rd attempt" },
+      { input: "block always fails (times=3)", output: "throws last exception" }
+    ],
+    edgeCases: ["times = 1 (no retry, just one attempt)", "Block throws different exceptions each time", "Successful on first attempt (no delay at all)"],
+    explanation: "`runCatching` wraps the call in a Result — on success `return` exits the outer function, on failure we wait and double the delay. The pattern avoids nested try/catch blocks.",
+    followUp: "How would you add a `shouldRetry: (Throwable) -> Boolean` predicate so only transient errors are retried?"
+  },
+  {
+    id: 5, title: "Extension functions on String", topic: "Extension functions", tag: "kotlin", diff: "beginner",
+    problem: "Add extension functions to String: (1) `toTitleCase()` capitalizes each word; (2) `isValidEmail()` checks basic email format; (3) `truncate(max)` cuts text and appends '…' if over the limit.",
+    features: ["Extension functions on built-in types", "Regex for validation", "`split`, `joinToString` for transformation"],
+    starter: `fun String.toTitleCase(): String = TODO()
+fun String.isValidEmail(): Boolean = TODO()
+fun String.truncate(max: Int): String = TODO()`,
+    solution: `fun String.toTitleCase(): String =
+    split(" ").joinToString(" ") { word ->
+        word.replaceFirstChar { it.uppercaseChar() }
+    }
+
+fun String.isValidEmail(): Boolean =
+    Regex("^[\\w.+-]+@[\\w-]+\\.[a-z]{2,}\$").matches(this)
+
+fun String.truncate(max: Int): String =
+    if (length <= max) this else substring(0, max) + "…"
+
+fun main() {
+    println("hello world".toTitleCase())     // Hello World
+    println("user@example.com".isValidEmail()) // true
+    println("bad-email".isValidEmail())       // false
+    println("Long string here".truncate(7))  // Long st…
+}`,
+    inputOutput: [
+      { input: '"hello world".toTitleCase()', output: '"Hello World"' },
+      { input: '"hi".truncate(5)', output: '"hi" (no truncation)' }
+    ],
+    edgeCases: ["Empty string for all three", "truncate(0) → just '…'", "Email with subdomain"],
+    explanation: "Extension functions attach new behaviour to existing classes without inheritance. The receiver (`this`) is the String instance. They are resolved statically, not virtually.",
+    followUp: "Can you override an existing method like `toString()` with an extension function? Why or why not?"
+  },
+  {
+    id: 6, title: "Coroutine countdown timer", topic: "Coroutines basics", tag: "kotlin", diff: "beginner",
+    problem: "Build a `CountdownTimer` that counts down from N seconds, emitting each tick to a callback, and calls `onFinish` when done. It must be cancellable.",
+    features: ["`CoroutineScope` + `launch`", "`delay` for 1-second ticks", "Structured concurrency with `Job`"],
+    starter: `class CountdownTimer(private val scope: CoroutineScope) {
+    private var job: Job? = null
+
+    fun start(seconds: Int, onTick: (Int) -> Unit, onFinish: () -> Unit) {
+        // TODO
+    }
+
+    fun cancel() { job?.cancel() }
+}`,
+    solution: `import kotlinx.coroutines.*
+
+class CountdownTimer(private val scope: CoroutineScope) {
+    private var job: Job? = null
+
+    fun start(seconds: Int, onTick: (Int) -> Unit, onFinish: () -> Unit) {
+        job?.cancel()
+        job = scope.launch {
+            for (remaining in seconds downTo 1) {
+                onTick(remaining)
+                delay(1000L)
+            }
+            onFinish()
+        }
+    }
+
+    fun cancel() { job?.cancel() }
+}`,
+    inputOutput: [
+      { input: "start(3, ...)", output: "onTick(3) → onTick(2) → onTick(1) → onFinish()" },
+      { input: "cancel() at tick 2", output: "onFinish() never called" }
+    ],
+    edgeCases: ["Calling start() twice should cancel the previous job", "cancel() before start() is a no-op", "seconds = 0 → immediate onFinish()"],
+    explanation: "`job?.cancel()` implements the 'cancel then restart' pattern safely. `delay` is a suspension point, so cancellation works cooperatively — the loop stops at the next `delay`.",
+    followUp: "Why is `delay` cancellation-cooperative but `Thread.sleep` is not? How does this affect testing?"
+  },
+  {
+    id: 7, title: "StateFlow UI state handler", topic: "Flow basics", tag: "kotlin", diff: "intermediate",
+    problem: "Create a `SearchViewModel` that holds a `StateFlow<SearchUiState>`. Typing in the search box should filter a hardcoded list of city names and update the state.",
+    features: ["`MutableStateFlow` + `StateFlow`", "`update {}` for immutable state mutation", "Simple data class for UI state"],
+    starter: `data class SearchUiState(
+    val query: String = "",
+    val results: List<String> = emptyList(),
+    val isLoading: Boolean = false
+)
+
+class SearchViewModel : ViewModel() {
+    // TODO: expose uiState and onQueryChanged()
+}`,
+    solution: `data class SearchUiState(
+    val query: String = "",
+    val results: List<String> = emptyList()
+)
+
+class SearchViewModel : ViewModel() {
+    private val cities = listOf(
+        "Mumbai","Delhi","Bangalore","Chennai","Kolkata","Hyderabad","Pune"
+    )
+    private val _uiState = MutableStateFlow(SearchUiState())
+    val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
+
+    fun onQueryChanged(query: String) {
+        _uiState.update { current ->
+            current.copy(
+                query = query,
+                results = cities.filter {
+                    it.contains(query, ignoreCase = true)
+                }
+            )
+        }
+    }
+}`,
+    inputOutput: [
+      { input: 'onQueryChanged("an")', output: 'results = ["Bangalore","Chennai"]' },
+      { input: 'onQueryChanged("")', output: "results = [] (empty query, no results)" }
+    ],
+    edgeCases: ["Empty query — show nothing or all? (design decision)", "Case insensitive match", "Query with no matches → empty list"],
+    explanation: "`StateFlow` is a hot flow: new collectors always get the latest value immediately. `update {}` is atomic, avoiding race conditions when multiple coroutines write concurrently.",
+    followUp: "How does `StateFlow` differ from `SharedFlow`? When would you choose one over the other?"
+  },
+  {
+    id: 8, title: "Data class copy & destructuring", topic: "Data classes", tag: "kotlin", diff: "beginner",
+    problem: "Model a `Product` with name, price, and category. Write functions: (1) `applyDiscount` that returns a copy with reduced price; (2) `cheapest` that destructures a list to find the min-price item.",
+    features: ["`data class` with `copy()`", "Destructuring declarations", "`minByOrNull` on a list"],
+    starter: `data class Product(val name: String, val price: Double, val category: String)
+
+fun applyDiscount(product: Product, percent: Int): Product = TODO()
+fun cheapest(products: List<Product>): String = TODO()`,
+    solution: `data class Product(val name: String, val price: Double, val category: String)
+
+fun applyDiscount(product: Product, percent: Int): Product =
+    product.copy(price = product.price * (1 - percent / 100.0))
+
+fun cheapest(products: List<Product>): String {
+    val (name, price, _) = products.minByOrNull { it.price }
+        ?: return "No products"
+    return "\$name @ ₹\${"%.2f".format(price)}"
+}
+
+fun main() {
+    val p = Product("Notebook", 200.0, "Stationery")
+    println(applyDiscount(p, 10)) // price = 180.0
+    val list = listOf(p, Product("Pen", 20.0, "Stationery"))
+    println(cheapest(list)) // Pen @ ₹20.00
+}`,
+    inputOutput: [
+      { input: "applyDiscount(Product(\"X\", 100.0, \"A\"), 20)", output: "Product(name=X, price=80.0, category=A)" },
+      { input: "cheapest(emptyList())", output: '"No products"' }
+    ],
+    edgeCases: ["0% discount → same price", "100% discount → free product", "Empty list for cheapest"],
+    explanation: "`copy()` creates a shallow clone with overridden fields — immutability-friendly. Destructuring `val (a, b, _)` maps to `component1()`, `component2()`, etc., auto-generated by the compiler.",
+    followUp: "Are data classes truly immutable? What happens if a property is a mutable collection like `MutableList`?"
+  },
+  {
+    id: 9, title: "Room entity + DAO skeleton", topic: "Room basics", tag: "android", diff: "intermediate",
+    problem: "Create a `Note` Room entity and a `NoteDao` with insert, delete by id, and a Flow-based query that returns all notes ordered by creation time descending.",
+    features: ["@Entity, @PrimaryKey, @ColumnInfo", "@Dao with @Insert, @Delete, @Query", "Returning `Flow<List<Note>>` from Room"],
+    starter: `// TODO: Define Note entity and NoteDao`,
+    solution: `import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+
+@Entity(tableName = "notes")
+data class Note(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "body") val body: String,
+    @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
+)
+
+@Dao
+interface NoteDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(note: Note)
+
+    @Query("DELETE FROM notes WHERE id = :id")
+    suspend fun deleteById(id: Int)
+
+    @Query("SELECT * FROM notes ORDER BY created_at DESC")
+    fun getAllNotes(): Flow<List<Note>>
+}`,
+    inputOutput: [
+      { input: "insert(Note(title='Hello', body='World'))", output: "Row inserted, Flow emits updated list" },
+      { input: "deleteById(1)", output: "Row removed, Flow re-emits" }
+    ],
+    edgeCases: ["Insert with duplicate id → REPLACE strategy", "deleteById on non-existent id is a no-op", "Flow continues emitting after each write"],
+    explanation: "Returning `Flow<List<Note>>` makes Room reactive — the UI auto-updates on DB changes without polling. `suspend` on write functions prevents blocking the main thread.",
+    followUp: "What is the difference between `Flow` and `LiveData` as a Room return type? Which should you prefer in new projects?"
+  },
+  {
+    id: 10, title: "Compose search bar component", topic: "Jetpack Compose basics", tag: "android", diff: "intermediate",
+    problem: "Build a reusable `SearchBar` composable that takes a query string, an onChange callback, and a clear button. Show a 'No results' message when the query is non-empty but results are empty.",
+    features: ["`@Composable` function", "`OutlinedTextField` with trailing icon", "`AnimatedVisibility` for the empty state"],
+    starter: `@Composable
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    results: List<String>
+) {
+    // TODO
+}`,
+    solution: `@Composable
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    results: List<String>
+) {
+    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            label = { Text("Search cities") },
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { onQueryChange("") }) {
+                        Icon(Icons.Default.Clear, contentDescription = "Clear")
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+        AnimatedVisibility(visible = query.isNotEmpty() && results.isEmpty()) {
+            Text(
+                text = "No results for \\"$query\\"",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+        results.forEach { city ->
+            Text(city, modifier = Modifier.padding(vertical = 4.dp))
+        }
+    }
+}`,
+    inputOutput: [
+      { input: 'query="ban", results=["Bangalore"]', output: "Shows Bangalore in list" },
+      { input: 'query="xyz", results=[]', output: '"No results for \\"xyz\\""' }
+    ],
+    edgeCases: ["Empty query — trailing icon hidden", "Very long city names wrap correctly", "Results update while typing"],
+    explanation: "Compose is declarative — the function re-executes when state changes. `AnimatedVisibility` adds a smooth enter/exit transition. Always hoist state (query lives in the ViewModel, not the composable).",
+    followUp: "What is 'state hoisting' in Compose and why is it important for reusability and testing?"
+  },
+  {
+    id: 11, title: "Grouping & mapping transactions", topic: "Collections", tag: "kotlin", diff: "intermediate",
+    problem: "Given a list of expense items with category and amount, group them by category and return a map of category → total spend, sorted by total descending.",
+    features: ["`groupBy`, `mapValues`, `sumOf`", "`toSortedMap` vs `sortedByDescending`", "Chaining collection operations"],
+    starter: `data class Expense(val category: String, val amount: Double)
+fun categoryTotals(expenses: List<Expense>): Map<String, Double> = TODO()`,
+    solution: `data class Expense(val category: String, val amount: Double)
+
+fun categoryTotals(expenses: List<Expense>): Map<String, Double> =
+    expenses
+        .groupBy { it.category }
+        .mapValues { (_, items) -> items.sumOf { it.amount } }
+        .entries
+        .sortedByDescending { it.value }
+        .associate { it.key to it.value }
+
+fun main() {
+    val expenses = listOf(
+        Expense("Food", 300.0), Expense("Travel", 800.0),
+        Expense("Food", 200.0), Expense("Utilities", 150.0)
+    )
+    println(categoryTotals(expenses))
+    // {Travel=800.0, Food=500.0, Utilities=150.0}
+}`,
+    inputOutput: [
+      { input: "Food×2, Travel×1, Utilities×1", output: "{Travel=800.0, Food=500.0, Utilities=150.0}" }
+    ],
+    edgeCases: ["Empty list → empty map", "Single category", "Two categories with equal totals (stable sort)"],
+    explanation: "`groupBy` builds a `Map<K, List<V>>`. `mapValues` transforms the value (list → sum) without touching keys. The final `associate` reconstructs a plain map from sorted entries.",
+    followUp: "How would you implement the same logic using `fold` in a single pass? Compare readability vs performance."
+  },
+  {
+    id: 12, title: "Callback to coroutine bridge", topic: "Coroutines basics", tag: "kotlin", diff: "intermediate",
+    problem: "Wrap a legacy callback-based `fetchUser(id, onSuccess, onError)` SDK call in a `suspend` function using `suspendCoroutine` or `suspendCancellableCoroutine`.",
+    features: ["`suspendCancellableCoroutine`", "`resume` vs `resumeWithException`", "Cancellation cleanup with `invokeOnCancellation`"],
+    starter: `// Legacy SDK (do not modify)
+fun fetchUser(id: String, onSuccess: (User) -> Unit, onError: (Exception) -> Unit) { /* ... */ }
+
+suspend fun fetchUserSuspend(id: String): User {
+    // TODO: wrap in suspendCancellableCoroutine
+}`,
+    solution: `import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+
+suspend fun fetchUserSuspend(id: String): User =
+    suspendCancellableCoroutine { continuation ->
+        fetchUser(
+            id = id,
+            onSuccess = { user ->
+                if (continuation.isActive) continuation.resume(user)
+            },
+            onError = { error ->
+                if (continuation.isActive) continuation.resumeWithException(error)
+            }
+        )
+        continuation.invokeOnCancellation {
+            // cancel the underlying SDK call if supported
+            println("Coroutine cancelled, cleaning up for $id")
+        }
+    }`,
+    inputOutput: [
+      { input: "SDK calls onSuccess(user)", output: "suspend function returns user" },
+      { input: "SDK calls onError(e)", output: "suspend function throws e" }
+    ],
+    edgeCases: ["Coroutine cancelled before callback fires", "SDK calls both callbacks (guard with `isActive`)", "SDK never calls back (needs a timeout wrapper)"],
+    explanation: "`suspendCancellableCoroutine` suspends the coroutine and gives you a `continuation` handle. `resume` unblocks it with a value, `resumeWithException` unblocks it with a throw. Always guard with `isActive`.",
+    followUp: "When would you use `suspendCoroutine` vs `suspendCancellableCoroutine`? What are the risks of the non-cancellable version?"
+  },
+  {
+    id: 13, title: "OOP: strategy pattern for payment", topic: "OOP in Kotlin", tag: "kotlin", diff: "intermediate",
+    problem: "Model a checkout system using the Strategy pattern. Define a `PaymentStrategy` interface and implement `CreditCard`, `UPI`, and `Wallet`. A `Checkout` class accepts any strategy.",
+    features: ["Interface + multiple implementations", "Constructor injection (dependency inversion)", "Companion object for factory method"],
+    starter: `interface PaymentStrategy {
+    fun pay(amount: Double): String
+}
+// TODO: implement strategies and Checkout`,
+    solution: `interface PaymentStrategy {
+    fun pay(amount: Double): String
+}
+
+class CreditCard(private val last4: String) : PaymentStrategy {
+    override fun pay(amount: Double) =
+        "Charged ₹%.2f to card ending $last4".format(amount)
+}
+
+class UPI(private val id: String) : PaymentStrategy {
+    override fun pay(amount: Double) =
+        "Sent ₹%.2f via UPI to $id".format(amount)
+}
+
+class Wallet(private var balance: Double) : PaymentStrategy {
+    override fun pay(amount: Double): String {
+        if (amount > balance) return "Insufficient wallet balance"
+        balance -= amount
+        return "Paid ₹%.2f from wallet. Remaining: ₹%.2f".format(amount, balance)
+    }
+}
+
+class Checkout(private val strategy: PaymentStrategy) {
+    fun complete(amount: Double) = strategy.pay(amount)
+
+    companion object {
+        fun withUPI(id: String) = Checkout(UPI(id))
+    }
+}
+
+fun main() {
+    println(Checkout(CreditCard("4242")).complete(999.0))
+    println(Checkout.withUPI("user@bank").complete(500.0))
+    println(Checkout(Wallet(300.0)).complete(500.0))
+}`,
+    inputOutput: [
+      { input: "CreditCard(4242).pay(999.0)", output: '"Charged ₹999.00 to card ending 4242"' },
+      { input: "Wallet(300).pay(500.0)", output: '"Insufficient wallet balance"' }
+    ],
+    edgeCases: ["Wallet with exactly enough balance", "Negative amount", "Changing strategy at runtime"],
+    explanation: "Strategy injects behaviour as an object. Kotlin interfaces can have default implementations. The `companion object` factory keeps construction readable without a separate Builder.",
+    followUp: "How would you make `PaymentStrategy` a functional interface (`fun interface`) and use a lambda instead of a class for simple strategies?"
+  },
+  {
+    id: 14, title: "ViewModel with LiveData", topic: "LiveData / StateFlow", tag: "android", diff: "beginner",
+    problem: "Create a `CounterViewModel` that exposes a `LiveData<Int>` counter. Provide `increment()`, `decrement()`, and `reset()` methods. Ensure the value never goes below 0.",
+    features: ["`MutableLiveData` + `LiveData` backing property", "`ViewModel` lifecycle scope", "Value guards for business rules"],
+    starter: `class CounterViewModel : ViewModel() {
+    // TODO: expose counter as LiveData and implement operations
+}`,
+    solution: `import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+
+class CounterViewModel : ViewModel() {
+    private val _counter = MutableLiveData(0)
+    val counter: LiveData<Int> = _counter
+
+    fun increment() {
+        _counter.value = (_counter.value ?: 0) + 1
+    }
+
+    fun decrement() {
+        _counter.value = maxOf(0, (_counter.value ?: 0) - 1)
+    }
+
+    fun reset() {
+        _counter.value = 0
+    }
+}`,
+    inputOutput: [
+      { input: "increment() × 3, then decrement()", output: "counter = 2" },
+      { input: "decrement() when counter = 0", output: "counter stays 0" }
+    ],
+    edgeCases: ["Decrement at zero → no negative values", "postValue() vs setValue() for background threads", "Observer not attached yet"],
+    explanation: "The private `_counter: MutableLiveData` allows internal mutation; the public `counter: LiveData` is read-only for the UI. This is the standard backing property pattern for Android ViewModels.",
+    followUp: "What is the difference between `setValue()` and `postValue()` on `MutableLiveData`? When must you use `postValue()`?"
+  },
+  {
+    id: 15, title: "RecyclerView DiffUtil helper", topic: "RecyclerView", tag: "android", diff: "intermediate",
+    problem: "Write a `DiffUtil.ItemCallback<Product>` for a product list. Products are the same item if their ids match, and visually the same if all fields match. Plug it into a `ListAdapter`.",
+    features: ["`DiffUtil.ItemCallback`", "`ListAdapter` instead of `RecyclerView.Adapter`", "Efficient list updates without `notifyDataSetChanged`"],
+    starter: `data class Product(val id: Int, val name: String, val price: Double)
+
+class ProductAdapter : ListAdapter<Product, ProductAdapter.ViewHolder>(/* TODO: DiffCallback */) {
+    // TODO
+}`,
+    solution: `data class Product(val id: Int, val name: String, val price: Double)
+
+class ProductAdapter : ListAdapter<Product, ProductAdapter.ViewHolder>(ProductDiffCallback()) {
+
+    class ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
+        override fun areItemsTheSame(old: Product, new: Product) =
+            old.id == new.id
+
+        override fun areContentsTheSame(old: Product, new: Product) =
+            old == new  // data class equals checks all fields
+    }
+
+    class ViewHolder(val binding: ItemProductBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(ItemProductBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false))
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val product = getItem(position)
+        holder.binding.tvName.text = product.name
+        holder.binding.tvPrice.text = "₹\${product.price}"
+    }
+}`,
+    inputOutput: [
+      { input: "submitList with same ids, changed price", output: "Only changed rows animate — no full refresh" },
+      { input: "submitList with new item added", output: "Insert animation only for new row" }
+    ],
+    edgeCases: ["Submitting the same list twice → no animations", "Item moves (id same, position different) → move animation", "`getItem()` during async diff callback"],
+    explanation: "`areItemsTheSame` decides if two objects are logically the same (used for move/insert/remove). `areContentsTheSame` decides if the view needs to be rebound. Data class `==` compares all fields for free.",
+    followUp: "Why is `notifyDataSetChanged()` problematic for UX and performance? What exactly does DiffUtil calculate behind the scenes?"
+  },
+  {
+    id: 16, title: "Simple pagination logic", topic: "Collections", tag: "kotlin", diff: "beginner",
+    problem: "Write a `paginate` function that takes a flat list and a page size, and returns a specific page (1-indexed) as a sublist. Return an empty list for out-of-bounds pages.",
+    features: ["`chunked` extension on List", "Safe index access with bounds checking", "1-indexed page logic"],
+    starter: `fun <T> paginate(items: List<T>, pageSize: Int, page: Int): List<T> = TODO()`,
+    solution: `fun <T> paginate(items: List<T>, pageSize: Int, page: Int): List<T> {
+    if (pageSize <= 0 || page <= 0) return emptyList()
+    val pages = items.chunked(pageSize)
+    return pages.getOrElse(page - 1) { emptyList() }
+}
+
+fun main() {
+    val items = (1..10).toList()
+    println(paginate(items, 3, 1)) // [1, 2, 3]
+    println(paginate(items, 3, 4)) // [10]
+    println(paginate(items, 3, 5)) // []
+}`,
+    inputOutput: [
+      { input: "items=1..10, pageSize=3, page=1", output: "[1, 2, 3]" },
+      { input: "items=1..10, pageSize=3, page=4", output: "[10] (partial last page)" }
+    ],
+    edgeCases: ["page=0 or negative → empty", "pageSize larger than list → single page", "Empty list → always empty"],
+    explanation: "`chunked(n)` splits a list into sublists of max size n. `getOrElse` returns the element or a lambda default, avoiding `IndexOutOfBoundsException` for out-of-range pages.",
+    followUp: "How would you implement infinite scroll in a ViewModel using this function? What happens to the UI state when a new page loads?"
+  },
+  {
+    id: 17, title: "Unit test a ViewModel", topic: "Basic unit testing", tag: "android", diff: "intermediate",
+    problem: "Write unit tests for the `CounterViewModel` using JUnit4 and `InstantTaskExecutorRule`. Test: initial value is 0, increment works, decrement at zero stays at 0.",
+    features: ["`InstantTaskExecutorRule` for LiveData", "JUnit `@Test`, `@Before`", "`observeForever` pattern for testing LiveData"],
+    starter: `class CounterViewModelTest {
+    // TODO: add rule and write tests
+}`,
+    solution: `import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import org.junit.*
+import org.junit.rules.TestRule
+
+class CounterViewModelTest {
+
+    @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
+    private lateinit var viewModel: CounterViewModel
+
+    @Before
+    fun setUp() {
+        viewModel = CounterViewModel()
+    }
+
+    @Test
+    fun \`initial value is zero\`() {
+        Assert.assertEquals(0, viewModel.counter.value)
+    }
+
+    @Test
+    fun \`increment increases count\`() {
+        viewModel.increment()
+        viewModel.increment()
+        Assert.assertEquals(2, viewModel.counter.value)
+    }
+
+    @Test
+    fun \`decrement at zero stays zero\`() {
+        viewModel.decrement()
+        Assert.assertEquals(0, viewModel.counter.value)
+    }
+
+    @Test
+    fun \`reset returns to zero\`() {
+        repeat(5) { viewModel.increment() }
+        viewModel.reset()
+        Assert.assertEquals(0, viewModel.counter.value)
+    }
+}`,
+    inputOutput: [
+      { input: "All 4 tests run", output: "4 tests pass, 0 failures" }
+    ],
+    edgeCases: ["Test isolation — each test gets a fresh ViewModel via @Before", "LiveData not updated without InstantTaskExecutorRule", "Testing Flow requires `runTest` from coroutines-test"],
+    explanation: "`InstantTaskExecutorRule` forces LiveData's background executor to run synchronously, so `.value` is available immediately in tests without observers or `CountDownLatch`.",
+    followUp: "How would you test a ViewModel that uses `viewModelScope.launch`? What additional test dependency and rule do you need?"
+  },
+  {
+    id: 18, title: "Flow-based search with debounce", topic: "Flow basics", tag: "kotlin", diff: "intermediate",
+    problem: "Convert a sequence of user keypresses into a debounced search Flow that only emits after 300ms of inactivity and ignores duplicate consecutive queries.",
+    features: ["`debounce` operator", "`distinctUntilChanged`", "`flatMapLatest` for cancelling stale requests"],
+    starter: `fun searchFlow(
+    queryFlow: Flow<String>,
+    search: suspend (String) -> List<String>
+): Flow<List<String>> = TODO()`,
+    solution: `import kotlinx.coroutines.flow.*
+
+fun searchFlow(
+    queryFlow: Flow<String>,
+    search: suspend (String) -> List<String>
+): Flow<List<String>> =
+    queryFlow
+        .debounce(300)
+        .distinctUntilChanged()
+        .filter { it.isNotBlank() }
+        .flatMapLatest { query -> flow { emit(search(query)) } }`,
+    inputOutput: [
+      { input: 'rapid typing "B","Ba","Ban" within 300ms', output: "Only 'Ban' triggers search" },
+      { input: '"Ban" typed twice in a row', output: "Search called only once" }
+    ],
+    edgeCases: ["Blank query is filtered out", "User types then immediately clears → stale request cancelled", "Network error in `search` propagates downstream"],
+    explanation: "`debounce` suppresses emissions until a quiet period elapses. `distinctUntilChanged` skips unchanged values. `flatMapLatest` cancels the previous `search` call when a new query arrives — critical for avoiding race conditions.",
+    followUp: "What is the difference between `flatMapLatest`, `flatMapMerge`, and `flatMapConcat`? Which is safest for search and why?"
+  },
+  {
+    id: 19, title: "Navigation with safe args", topic: "Navigation", tag: "android", diff: "intermediate",
+    problem: "Set up two destinations in a nav graph: a product list screen and a product detail screen. Pass a `productId: Int` from list to detail using Safe Args. Write the navigation call.",
+    features: ["NavGraph XML with `<argument>`", "Safe Args `Directions` generated class", "`findNavController().navigate()`"],
+    starter: `<!-- nav_graph.xml skeleton -->
+<!-- TODO: define list and detail fragments with argument -->`,
+    solution: `<!-- nav_graph.xml -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/productListFragment">
+
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name=".ProductListFragment">
+        <action
+            android:id="@+id/action_list_to_detail"
+            app:destination="@id/productDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name=".ProductDetailFragment">
+        <argument
+            android:name="productId"
+            app:argType="integer" />
+    </fragment>
+</navigation>
+
+// In ProductListFragment.kt
+val action = ProductListFragmentDirections
+    .actionListToDetail(productId = product.id)
+findNavController().navigate(action)
+
+// In ProductDetailFragment.kt
+private val args: ProductDetailFragmentArgs by navArgs()
+
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    val id = args.productId
+    // load product by id
+}`,
+    inputOutput: [
+      { input: "Tap product with id=42", output: "Detail screen opens with productId=42 available" }
+    ],
+    edgeCases: ["Back stack: back press returns to list", "Deep link directly to detail requires default argument or handled nullable", "Wrong arg type causes compile-time error (Safe Args benefit)"],
+    explanation: "Safe Args generates type-safe `Directions` and `Args` classes at build time. Unlike `Bundle`, typos and type mismatches are compile errors, not runtime crashes.",
+    followUp: "What is the difference between `navigate()` with `popUpTo` and a simple push? When would you use `popUpTo` to clear the back stack?"
+  },
+  {
+    id: 20, title: "API state with sealed class + Flow", topic: "API handling basics", tag: "android", diff: "intermediate",
+    problem: "Write a `UserRepository` that wraps a Retrofit call in a `Flow<Result<User>>`, emitting Loading, then either Success or Error. The ViewModel collects it into a `StateFlow`.",
+    features: ["`flow { }` builder with `emit`", "`runCatching` for Retrofit exception handling", "`stateIn` with `SharingStarted.WhileSubscribed`"],
+    starter: `interface UserApi { suspend fun getUser(id: String): User }
+data class User(val id: String, val name: String)
+
+class UserRepository(private val api: UserApi) {
+    fun getUser(id: String): Flow<Result<User>> = TODO()
+}`,
+    solution: `interface UserApi { suspend fun getUser(id: String): User }
+data class User(val id: String, val name: String)
+
+class UserRepository(private val api: UserApi) {
+    fun getUser(id: String): Flow<Result<User>> = flow {
+        emit(Result.loading())
+        val result = runCatching { api.getUser(id) }
+        emit(result.fold(
+            onSuccess = { Result.success(it) },
+            onFailure = { Result.error(it.message ?: "Unknown error") }
+        ))
+    }
+}
+
+sealed class Result<out T> {
+    object Loading : Result<Nothing>()
+    data class Success<T>(val data: T) : Result<T>()
+    data class Error(val message: String) : Result<Nothing>()
+    companion object {
+        fun loading() = Loading
+        fun <T> success(data: T) = Success(data)
+        fun error(msg: String) = Error(msg)
+    }
+}
+
+class UserViewModel(private val repo: UserRepository) : ViewModel() {
+    fun loadUser(id: String): StateFlow<Result<User>> =
+        repo.getUser(id)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Result.Loading)
+}`,
+    inputOutput: [
+      { input: "loadUser('u1') — API succeeds", output: "Loading → Success(User(...))" },
+      { input: "loadUser('u1') — API throws", output: 'Loading → Error("message")' }
+    ],
+    edgeCases: ["No network — IOException vs HttpException handling", "Activity rotates — `WhileSubscribed(5000)` keeps upstream alive 5s", "Multiple collectors share one upstream via `stateIn`"],
+    explanation: "`flow { emit() }` creates a cold flow. `stateIn` converts it to a hot `StateFlow` tied to the `viewModelScope` lifecycle. `SharingStarted.WhileSubscribed(5000)` is the recommended default for ViewModels.",
+    followUp: "Why is `WhileSubscribed(5000)` recommended over `Eagerly` for ViewModels? What does the 5000ms timeout protect against?"
+  }
+];
+
+const TOPICS = [...new Set(ASSIGNMENTS.map(a => a.topic))];
+
+let activeTopics = new Set();
+let currentIdx = 0;
+
+function getFiltered() {
+  if (activeTopics.size === 0) return ASSIGNMENTS;
+  return ASSIGNMENTS.filter(a => activeTopics.has(a.topic));
+}
+
+function renderFilters() {
+  const container = document.getElementById('filters');
+  container.innerHTML = '';
+  TOPICS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (activeTopics.has(t) ? ' active' : '');
+    btn.textContent = t;
+    btn.onclick = () => {
+      activeTopics.has(t) ? activeTopics.delete(t) : activeTopics.add(t);
+      currentIdx = 0;
+      renderFilters();
+      renderCard();
+    };
+    container.appendChild(btn);
+  });
+}
+
+let activeTab = 'problem';
+
+function renderCard() {
+  const filtered = getFiltered();
+  const counter = document.getElementById('counter');
+  const area = document.getElementById('card-area');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+
+  if (filtered.length === 0) {
+    area.innerHTML = '<div class="empty">No assignments match the selected topics.</div>';
+    counter.textContent = '0 assignments';
+    prevBtn.disabled = true; nextBtn.disabled = true;
+    return;
+  }
+
+  currentIdx = Math.max(0, Math.min(currentIdx, filtered.length - 1));
+  const a = filtered[currentIdx];
+  prevBtn.disabled = currentIdx === 0;
+  nextBtn.disabled = currentIdx === filtered.length - 1;
+  counter.textContent = `${currentIdx + 1} of ${filtered.length}`;
+
+  const tabs = ['problem','solution','io','followup'];
+  const tabLabels = { problem: 'Problem', solution: 'Solution', io: 'I/O & Edge cases', followup: 'Follow-up' };
+
+  area.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div style="flex:1">
+          <p class="card-title">${a.id}. ${a.title}</p>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <span class="badge badge-${a.tag}">${a.tag === 'kotlin' ? 'Kotlin' : 'Android'}</span>
+            <span class="badge badge-diff-${a.diff}">${a.diff}</span>
+            <span class="badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">${a.topic}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tabs" id="tabs-row"></div>
+        <div class="section" id="sec-problem"></div>
+        <div class="section" id="sec-solution"></div>
+        <div class="section" id="sec-io"></div>
+        <div class="section" id="sec-followup"></div>
+      </div>
+    </div>`;
+
+  const tabsRow = document.getElementById('tabs-row');
+  tabs.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'tab' + (activeTab === t ? ' active' : '');
+    el.textContent = tabLabels[t];
+    el.onclick = () => { activeTab = t; switchTab(); };
+    tabsRow.appendChild(el);
+  });
+
+  document.getElementById('sec-problem').innerHTML = `
+    <div class="section-label">Problem</div>
+    <p class="text">${a.problem}</p>
+    <div class="section-label">Required features</div>
+    <ul class="list">${a.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+    ${a.starter ? `<div class="section-label">Starter code</div><pre>${esc(a.starter)}</pre>` : ''}
+  `;
+
+  document.getElementById('sec-solution').innerHTML = `
+    <div class="section-label">Solution</div>
+    <pre>${esc(a.solution)}</pre>
+    <div class="section-label">Explanation</div>
+    <p class="text">${a.explanation}</p>
+  `;
+
+  document.getElementById('sec-io').innerHTML = `
+    <div class="section-label">Sample input / output</div>
+    ${a.inputOutput.map(io => `
+      <div class="io-row">
+        <div class="io-box"><div class="io-label">Input</div><pre>${esc(io.input)}</pre></div>
+        <div class="io-box"><div class="io-label">Output</div><pre>${esc(io.output)}</pre></div>
+      </div>`).join('')}
+    <div class="section-label">Edge cases</div>
+    <ul class="list">${a.edgeCases.map(e=>`<li>${e}</li>`).join('')}</ul>
+  `;
+
+  document.getElementById('sec-followup').innerHTML = `
+    <div class="section-label">Interview follow-up question</div>
+    <div class="callout">${a.followUp}</div>
+    <button class="generate-btn" style="margin-top:12px" onclick="sendPrompt('Answer this Kotlin/Android interview follow-up question in depth: ${a.followUp.replace(/'/g, "\\'")} ↗')">Discuss this question ↗</button>
+  `;
+
+  switchTab();
+}
+
+function switchTab() {
+  const tabs2 = ['problem','solution','io','followup'];
+  tabs2.forEach(t => {
+    const sec = document.getElementById('sec-' + t);
+    if (sec) sec.className = 'section' + (activeTab === t ? ' visible' : '');
+  });
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.className = 'tab' + (tabs2[i] === activeTab ? ' active' : '');
+  });
+}
+
+function navigate(dir) {
+  const filtered = getFiltered();
+  currentIdx = Math.max(0, Math.min(currentIdx + dir, filtered.length - 1));
+  renderCard();
+}
+
+function esc(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+renderFilters();
+renderCard();
+</script>
